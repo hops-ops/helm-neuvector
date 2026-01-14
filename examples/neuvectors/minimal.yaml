@@ -1,0 +1,7 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: NeuVector
+metadata:
+  name: neuvector
+  namespace: default
+spec:
+  clusterName: my-cluster

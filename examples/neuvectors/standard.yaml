@@ -1,0 +1,28 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: NeuVector
+metadata:
+  name: neuvector
+  namespace: default
+spec:
+  clusterName: production-cluster
+  namespace: neuvector
+  labels:
+    team: security
+    environment: production
+  providerConfigRef:
+    name: production-cluster
+    kind: ProviderConfig
+  values:
+    # Production-grade controller settings
+    controller:
+      replicas: 3
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+    # Scanner settings
+    scanner:
+      replicas: 3

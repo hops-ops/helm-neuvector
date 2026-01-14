@@ -1,0 +1,63 @@
+# code: language=yaml
+#
+# Helm release for NeuVector - container security platform
+#
+# Defaults:
+# - Enables controller, enforcer, and manager components
+# - Enables container runtime protection
+# - Enables admission control webhook
+#
+
+{{- $n := $state.neuvector }}
+
+---
+apiVersion: helm.m.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: {{ $n.releaseName }}
+  annotations:
+    {{ setResourceNameAnnotation "helm-release-neuvector" }}
+  labels: {{ $n.labels | toJson }}
+spec:
+  managementPolicies: {{ $n.managementPolicies | toJson }}
+  forProvider:
+    chart:
+      name: core
+      repository: https://neuvector.github.io/neuvector-helm
+      version: 2.8.10
+    namespace: {{ $n.namespace }}
+    {{- if $n.overrideAllValues }}
+    values:
+      {{- toYaml $n.overrideAllValues | nindent 6 }}
+    {{- else }}
+    values:
+      fullnameOverride: neuvector
+      nameOverride: neuvector
+      # Controller - brain of NeuVector
+      controller:
+        enabled: true
+        replicas: 3
+      # Enforcer - runtime protection on each node
+      enforcer:
+        enabled: true
+      # Manager - web UI
+      manager:
+        enabled: true
+      # Scanner - vulnerability scanning
+      scanner:
+        enabled: true
+        replicas: 2
+      # Admission control webhook
+      admissionwebhook:
+        type: ClusterIP
+      # CRD for security policies
+      crd:
+        enabled: true
+      {{- if $n.values }}
+      {{- toYaml $n.values | nindent 6 }}
+      {{- end }}
+    {{- end }}
+  rollbackLimit: 3
+  providerConfigRef:
+    name: {{ $n.providerConfigRef.name }}
+    kind: {{ $n.providerConfigRef.kind }}
