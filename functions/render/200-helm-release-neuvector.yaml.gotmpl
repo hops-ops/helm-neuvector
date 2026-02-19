@@ -31,8 +31,6 @@ spec:
       {{- toYaml $n.overrideAllValues | nindent 6 }}
     {{- else }}
     values:
-      fullnameOverride: neuvector
-      nameOverride: neuvector
       # Controller - brain of NeuVector
       controller:
         enabled: true

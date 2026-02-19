@@ -1,5 +1,0 @@
-apiVersion: v2
-name: helm-neuvector
-version: 0.0.0
-description: GitOps packaging for the NeuVector Crossplane configuration
-appVersion: 2.8.11
